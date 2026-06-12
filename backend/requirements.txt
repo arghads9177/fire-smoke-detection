@@ -1,0 +1,12 @@
+# FastAPI backend dependencies (plan §3.3)
+fastapi
+uvicorn[standard]
+motor
+python-socketio
+pydantic-settings
+
+# test
+pytest
+pytest-asyncio
+httpx
+mongomock-motor

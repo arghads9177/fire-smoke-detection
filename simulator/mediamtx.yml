@@ -1,0 +1,17 @@
+# MediaMTX configuration for the camera simulator (plan §3.1).
+# Exposes RTSP on :8554; ffmpeg loops publish cam1..cam4 onto it.
+
+logLevel: info
+
+rtsp: yes
+rtspAddress: :8554
+
+# Disable protocols the MVP doesn't use
+rtmp: no
+hls: no       # flip to yes for the optional dashboard live-preview stretch goal
+webrtc: no
+srt: no
+
+paths:
+  # Streams are published dynamically by ffmpeg (cam1..cam4); accept anything.
+  all_others:

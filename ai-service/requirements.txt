@@ -1,0 +1,9 @@
+# AI detection service dependencies (plan §3.2)
+ultralytics
+opencv-python
+httpx
+pyyaml
+numpy
+
+# test
+pytest

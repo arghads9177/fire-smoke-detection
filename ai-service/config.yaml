@@ -1,0 +1,33 @@
+# AI service static configuration (plan §4).
+# Runtime-tunable thresholds (fire/smoke confidence, debounce, cooldown) are NOT here —
+# they live in the backend `settings` collection and are fetched at startup.
+
+model:
+  # Pretrained fire/smoke checkpoint chosen in the Day-3 spike; swap without code changes.
+  path: models/fire-smoke.pt
+  classes:
+    fire: 0
+    smoke: 1
+
+inference:
+  fps: 3                 # sampled frames per second per camera
+  image_size: 640        # reduce to 480 if CPU-only inference can't keep up
+
+backend:
+  url: http://localhost:8000/api/v1
+  api_key: changeme      # must match backend .env API_KEY
+  heartbeat_seconds: 10
+
+snapshots:
+  dir: ../backend/snapshots   # shared with backend, served statically at /snapshots/*
+
+# Fallback camera list (normally fetched from the backend `cameras` collection on start)
+cameras:
+  - cameraId: cam1
+    streamUrl: rtsp://localhost:8554/cam1
+  - cameraId: cam2
+    streamUrl: rtsp://localhost:8554/cam2
+  - cameraId: cam3
+    streamUrl: rtsp://localhost:8554/cam3
+  - cameraId: cam4
+    streamUrl: rtsp://localhost:8554/cam4

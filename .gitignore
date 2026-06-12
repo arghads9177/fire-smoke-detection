@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- project-specific ---
+.run/
+backend/snapshots/*.jpg
+ai-service/models/*.pt
+simulator/videos/*.mp4
+simulator/bin/mediamtx

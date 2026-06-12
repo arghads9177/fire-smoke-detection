@@ -5,12 +5,19 @@ logLevel: info
 
 rtsp: yes
 rtspAddress: :8554
+# Plain RTSP only — "optional" (the default) makes MediaMTX generate auto.crt/auto.key
+# TLS certs in the working directory, which we don't want littering the repo.
+rtspEncryption: "no"
+# TCP only (publishers and the AI service both use it); also frees the default
+# UDP/RTP listeners on :8000/:8001 — port 8000 belongs to the FastAPI backend.
+rtspTransports: [tcp]
 
 # Disable protocols the MVP doesn't use
 rtmp: no
 hls: no       # flip to yes for the optional dashboard live-preview stretch goal
 webrtc: no
 srt: no
+moq: no       # default-on in v1.19+, and auto-generates TLS certs in the cwd
 
 paths:
   # Streams are published dynamically by ffmpeg (cam1..cam4); accept anything.

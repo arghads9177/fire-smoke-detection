@@ -4,10 +4,12 @@
 
 model:
   # Pretrained fire/smoke checkpoint chosen in the Day-3 spike; swap without code changes.
-  path: models/fire-smoke.pt
+  # Source: https://huggingface.co/rabahdev/fire-smoke-yolov8n (YOLOv8n — CPU-friendly)
+  path: models/rabahdev-fire-smoke-yolov8n.pt
+  # Class ids as defined by the checkpoint (model.names) — update when swapping weights.
   classes:
-    fire: 0
-    smoke: 1
+    smoke: 0
+    fire: 1
 
 inference:
   fps: 3                 # sampled frames per second per camera

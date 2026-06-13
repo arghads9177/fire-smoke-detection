@@ -4,6 +4,10 @@ opencv-python
 httpx
 pyyaml
 numpy
+pydantic
+
+# shared detection-event schema (single source of truth with the backend):
+#   uv pip install --python .venv/bin/python -e ./shared   (from the repo root)
 
 # test
 pytest

@@ -220,9 +220,11 @@ __marimo__/
 # --- project-specific ---
 .run/
 backend/snapshots/*.jpg
+backend/uploads/
 ai-service/models/*.pt
 simulator/videos/*.mp4
 simulator/bin/mediamtx
+.playwright-mcp/
 simulator/bin/ffmpeg
 simulator/bin/ffprobe
 # TLS certs MediaMTX auto-generates if rtspEncryption is left at its default

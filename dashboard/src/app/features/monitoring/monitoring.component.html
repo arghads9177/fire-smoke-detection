@@ -1,0 +1,62 @@
+<h1 class="mb-4 text-2xl font-bold tracking-tight text-slate-900">Live Monitoring</h1>
+
+@if (uploadError) {
+  <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ uploadError }}</p>
+}
+
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  @for (camera of cameras; track camera.cameraId) {
+    <div class="flex flex-col gap-3 rounded-xl border p-4 shadow-sm transition-colors" [class]="cardClasses(camera)">
+      <header class="flex items-center justify-between">
+        <h2 class="text-base font-semibold text-slate-900">{{ camera.name }}</h2>
+        <app-status-badge [label]="camera.status" [variant]="statusVariant(camera)" />
+      </header>
+
+      <p class="-mt-2 text-xs text-slate-500">{{ camera.location }}</p>
+
+      <dl class="flex gap-6">
+        <div>
+          <dt class="text-[0.7rem] font-medium uppercase tracking-wide text-slate-400">Fire</dt>
+          <dd class="text-sm font-semibold text-slate-800">{{ camera.currentState.fire ? 'Yes' : 'No' }}</dd>
+        </div>
+        <div>
+          <dt class="text-[0.7rem] font-medium uppercase tracking-wide text-slate-400">Smoke</dt>
+          <dd class="text-sm font-semibold text-slate-800">{{ camera.currentState.smoke ? 'Yes' : 'No' }}</dd>
+        </div>
+      </dl>
+
+      <app-confidence-bar [confidence]="camera.currentState.confidence" />
+
+      <p class="text-xs text-slate-500">
+        Last event:
+        @if (camera.currentState.lastEventAt) {
+          {{ camera.currentState.lastEventAt | date: 'medium' }}
+        } @else {
+          —
+        }
+      </p>
+
+      <label
+        class="mt-auto flex cursor-pointer items-center justify-center rounded-md border border-dashed border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-blue-400 hover:text-blue-600"
+        [class.opacity-50]="uploadingCameraId === camera.cameraId"
+      >
+        @if (uploadingCameraId === camera.cameraId) {
+          Uploading…
+        } @else {
+          Upload video feed (.mp4)
+        }
+        <input
+          type="file"
+          accept="video/mp4"
+          class="hidden"
+          [disabled]="uploadingCameraId === camera.cameraId"
+          (change)="uploadFeed(camera, $event)"
+        />
+      </label>
+    </div>
+  } @empty {
+    <p class="col-span-full rounded-lg border border-dashed border-slate-300 bg-white py-8 text-center text-sm text-slate-500">
+      No cameras configured.
+    </p>
+  }
+</div>

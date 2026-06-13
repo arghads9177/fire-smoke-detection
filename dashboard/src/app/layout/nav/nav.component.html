@@ -1,0 +1,29 @@
+<nav class="sticky top-0 z-20 flex items-center gap-1 bg-slate-900 px-4 py-3 shadow-md sm:gap-2 sm:px-6">
+  <div class="mr-2 flex items-center gap-2 sm:mr-6">
+    <span class="text-xl leading-none">🔥</span>
+    <span class="text-base font-bold tracking-tight text-white">Fire &amp; Smoke Detection</span>
+  </div>
+
+  <a
+    class="rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+    routerLink="/"
+    routerLinkActive="bg-slate-800 text-white"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    Live Monitoring
+  </a>
+  <a
+    class="rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+    routerLink="/alerts"
+    routerLinkActive="bg-slate-800 text-white"
+  >
+    Active Alerts
+  </a>
+  <a
+    class="rounded-md px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+    routerLink="/incidents"
+    routerLinkActive="bg-slate-800 text-white"
+  >
+    Incident History
+  </a>
+</nav>

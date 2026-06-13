@@ -1,0 +1,11 @@
+<app-nav />
+
+@if (!(connected$ | async)) {
+  <div class="bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
+    Connection lost — retrying… (falling back to polling)
+  </div>
+}
+
+<main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+  <router-outlet />
+</main>

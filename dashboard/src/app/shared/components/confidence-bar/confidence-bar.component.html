@@ -1,0 +1,10 @@
+<div class="relative h-4 w-full overflow-hidden rounded-full bg-slate-200">
+  <div
+    class="h-full rounded-full transition-all duration-300 ease-out"
+    [class]="fillClasses"
+    [style.width.%]="confidence * 100"
+  ></div>
+  <span class="absolute inset-0 flex items-center justify-center text-[0.65rem] font-semibold text-slate-800">
+    {{ confidence | percent }}
+  </span>
+</div>

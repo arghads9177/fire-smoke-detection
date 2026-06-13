@@ -1,0 +1,27 @@
+<h1 class="mb-4 text-2xl font-bold tracking-tight text-slate-900">Active Alerts</h1>
+
+<div class="flex flex-col gap-2">
+  @for (alert of alerts; track alert.alertId) {
+    <div class="flex flex-wrap items-center gap-3 rounded-lg border p-3 shadow-sm sm:gap-4" [class]="rowClasses(alert)">
+      <app-status-badge
+        [label]="alert.level"
+        [variant]="alert.level === 'CRITICAL' ? 'critical' : 'warning'"
+      />
+      <span class="font-semibold text-slate-900">{{ alert.cameraId }}</span>
+      <span class="text-sm text-slate-600">{{ alert.type }}</span>
+      <span class="text-sm text-slate-600">{{ alert.maxConfidence | number: '1.0-2' }}</span>
+      <span class="ml-auto text-sm text-slate-500">{{ alert.lastSeenAt | date: 'medium' }}</span>
+      <button
+        type="button"
+        (click)="acknowledge(alert)"
+        class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-700"
+      >
+        Acknowledge
+      </button>
+    </div>
+  } @empty {
+    <p class="rounded-lg border border-dashed border-slate-300 bg-white py-8 text-center text-sm text-slate-500">
+      No active alerts.
+    </p>
+  }
+</div>

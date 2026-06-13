@@ -4,6 +4,7 @@ uvicorn[standard]
 motor
 python-socketio
 pydantic-settings
+python-multipart
 
 # test
 pytest

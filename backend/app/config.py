@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     # Directory of annotated snapshots, served statically at /snapshots/*
     snapshots_dir: str = "snapshots"
 
+    # Directory for manually uploaded camera feed videos (plan: manual mp4 feed)
+    uploads_dir: str = "uploads"
+
     @property
     def mongo_uri(self) -> str:
         credentials = ""

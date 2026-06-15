@@ -27,6 +27,22 @@
 
       <app-confidence-bar [confidence]="camera.currentState.confidence" />
 
+      @if (camera.status === 'ONLINE' && !camera.currentState.fire && !camera.currentState.smoke) {
+        <p class="flex items-center gap-1.5 text-xs text-emerald-600">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          Monitoring — no threat detected
+        </p>
+      }
+
+      <p class="text-xs text-slate-500">
+        Last checked:
+        @if (camera.lastHeartbeat) {
+          {{ camera.lastHeartbeat | date: 'medium' }}
+        } @else {
+          —
+        }
+      </p>
+
       <p class="text-xs text-slate-500">
         Last event:
         @if (camera.currentState.lastEventAt) {

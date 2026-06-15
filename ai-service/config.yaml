@@ -33,3 +33,5 @@ cameras:
     streamUrl: rtsp://localhost:8554/cam3
   - cameraId: cam4
     streamUrl: rtsp://localhost:8554/cam4
+  - cameraId: cam5
+    streamUrl: rtsp://localhost:8554/phonecam/live

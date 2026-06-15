@@ -26,6 +26,10 @@ class CameraUpdate(BaseModel):
     streamUrl: str | None = None
 
 
+class StreamUrlUpdate(BaseModel):
+    streamUrl: str
+
+
 class CameraOut(BaseModel):
     cameraId: str
     name: str

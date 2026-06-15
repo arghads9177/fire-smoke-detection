@@ -11,13 +11,14 @@ from shared.schemas import Heartbeat
 from app.config import get_settings
 from app.db import get_db, strip_id
 from app.dependencies import require_api_key
-from app.schemas.cameras import CameraCreate, CameraOut, CameraUpdate
+from app.schemas.cameras import CameraCreate, CameraOut, CameraUpdate, StreamUrlUpdate
 from app.services.alert_engine import DEFAULT_CAMERA_STATE
 from app.sockets import emit_camera_status
 
 router = APIRouter(prefix="/cameras", tags=["cameras"])
 
 ALLOWED_FEED_EXTENSIONS = {".mp4"}
+ALLOWED_STREAM_SCHEMES = ("rtsp://", "rtmp://", "http://", "https://")
 
 
 @router.get("", response_model=list[CameraOut])
@@ -99,6 +100,32 @@ async def upload_feed(
             out.write(chunk)
 
     await db.cameras.update_one({"cameraId": camera_id}, {"$set": {"streamUrl": str(dest)}})
+    camera = await db.cameras.find_one({"cameraId": camera_id})
+    await emit_camera_status(strip_id(camera))
+    return strip_id(camera)
+
+
+@router.post("/{camera_id}/stream", response_model=CameraOut)
+async def set_stream_url(
+    camera_id: str,
+    body: StreamUrlUpdate,
+    db: AsyncIOMotorDatabase = Depends(get_db),
+) -> dict:
+    """Point a camera at a new stream source (e.g. a phone publishing to MediaMTX).
+
+    The AI service picks up the change on its next /cameras poll
+    (_refresh_stream_urls), so no restart is needed.
+    """
+    camera = await db.cameras.find_one({"cameraId": camera_id})
+    if camera is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "camera not found")
+
+    if not body.streamUrl.startswith(ALLOWED_STREAM_SCHEMES):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "unsupported stream URL scheme")
+
+    await db.cameras.update_one(
+        {"cameraId": camera_id}, {"$set": {"streamUrl": body.streamUrl}}
+    )
     camera = await db.cameras.find_one({"cameraId": camera_id})
     await emit_camera_status(strip_id(camera))
     return strip_id(camera)

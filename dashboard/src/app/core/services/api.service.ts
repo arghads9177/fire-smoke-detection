@@ -29,6 +29,14 @@ export class ApiService {
     return this.http.post<Camera>(`${this.baseUrl}/cameras/${cameraId}/feed`, formData);
   }
 
+  setStreamUrl(cameraId: string, streamUrl: string): Observable<Camera> {
+    return this.http.post<Camera>(`${this.baseUrl}/cameras/${cameraId}/stream`, { streamUrl });
+  }
+
+  getSystemInfo(): Observable<{ lanIp: string }> {
+    return this.http.get<{ lanIp: string }>(`${this.baseUrl}/system/info`);
+  }
+
   getAlerts(status?: string, cameraId?: string): Observable<Alert[]> {
     let params = new HttpParams();
     if (status) {

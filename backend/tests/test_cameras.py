@@ -108,6 +108,49 @@ def test_upload_feed_unknown_camera_404(client):
     assert resp.status_code == 404
 
 
+def test_set_stream_url_persists_and_emits(client, monkeypatch):
+    client.post("/api/v1/cameras", json=CAMERA)
+
+    emitted = []
+
+    async def fake_emit(event, data):
+        emitted.append((event, data))
+
+    from app.sockets import sio
+
+    monkeypatch.setattr(sio, "emit", fake_emit)
+
+    resp = client.post(
+        "/api/v1/cameras/cam1/stream",
+        json={"streamUrl": "rtsp://localhost:8554/phonecam"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["streamUrl"] == "rtsp://localhost:8554/phonecam"
+
+    camera = client.get("/api/v1/cameras/cam1").json()
+    assert camera["streamUrl"] == "rtsp://localhost:8554/phonecam"
+
+    assert emitted == [("camera:status", emitted[0][1])]
+    assert emitted[0][1]["streamUrl"] == "rtsp://localhost:8554/phonecam"
+
+
+def test_set_stream_url_rejects_bad_scheme(client):
+    client.post("/api/v1/cameras", json=CAMERA)
+    resp = client.post(
+        "/api/v1/cameras/cam1/stream",
+        json={"streamUrl": "ftp://localhost/phonecam"},
+    )
+    assert resp.status_code == 400
+
+
+def test_set_stream_url_unknown_camera_404(client):
+    resp = client.post(
+        "/api/v1/cameras/cam99/stream",
+        json={"streamUrl": "rtsp://localhost:8554/phonecam"},
+    )
+    assert resp.status_code == 404
+
+
 def test_heartbeat_upserts_and_sets_status(client, auth_headers):
     resp = client.post(
         "/api/v1/cameras/cam1/heartbeat",

@@ -12,8 +12,14 @@ rtspEncryption: "no"
 # UDP/RTP listeners on :8000/:8001 — port 8000 belongs to the FastAPI backend.
 rtspTransports: [tcp]
 
+# RTMP ingest — lets a phone (e.g. Larix Broadcaster) push a live camera feed
+# in, which is then re-exposed over RTSP at rtsp://<host>:8554/phonecam for the
+# AI service to consume (see PHONE_CAMERA_MEDIAMTX_PLAN.md).
+rtmp: yes
+rtmpAddress: :1935
+rtmpEncryption: "no"
+
 # Disable protocols the MVP doesn't use
-rtmp: no
 hls: no       # flip to yes for the optional dashboard live-preview stretch goal
 webrtc: no
 srt: no

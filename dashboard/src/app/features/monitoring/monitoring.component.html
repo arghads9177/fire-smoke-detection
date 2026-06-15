@@ -69,6 +69,25 @@
           (change)="uploadFeed(camera, $event)"
         />
       </label>
+
+      <button
+        type="button"
+        class="flex items-center justify-center rounded-md border border-dashed border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:border-blue-400 hover:text-blue-600"
+        [class.opacity-50]="connectingCameraId === camera.cameraId"
+        [disabled]="connectingCameraId === camera.cameraId"
+        (click)="connectPhone(camera)"
+      >
+        @if (connectingCameraId === camera.cameraId) {
+          Connecting…
+        } @else {
+          Use phone feed
+        }
+      </button>
+
+      <p class="text-xs text-slate-500">
+        Publish from your phone to:
+        <code class="block break-all rounded bg-slate-100 px-1.5 py-0.5 text-slate-700">{{ phoneRtmpUrl }}</code>
+      </p>
     </div>
   } @empty {
     <p class="col-span-full rounded-lg border border-dashed border-slate-300 bg-white py-8 text-center text-sm text-slate-500">

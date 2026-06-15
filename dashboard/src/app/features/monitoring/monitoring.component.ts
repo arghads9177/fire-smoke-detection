@@ -17,6 +17,13 @@ export class MonitoringComponent implements OnInit, OnDestroy {
   cameras: Camera[] = [];
   uploadingCameraId: string | null = null;
   uploadError: string | null = null;
+  connectingCameraId: string | null = null;
+
+  /** RTMP target a phone broadcaster (e.g. Larix) should publish to.
+   * Defaults to the page's hostname, then refined to the server's LAN IP
+   * once /system/info responds — `window.location.hostname` is "localhost"
+   * when the dashboard is opened locally, which a phone can't reach. */
+  phoneRtmpUrl = `rtmp://${window.location.hostname}:1935/phonecam/live`;
 
   private readonly subscriptions = new Subscription();
 
@@ -27,6 +34,13 @@ export class MonitoringComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.api.getCameras().subscribe((cameras) => (this.cameras = cameras));
+
+    this.api.getSystemInfo().subscribe({
+      next: ({ lanIp }) => (this.phoneRtmpUrl = `rtmp://${lanIp}:1935/phonecam/live`),
+      error: () => {
+        // keep the window.location.hostname fallback
+      },
+    });
 
     this.subscriptions.add(
       this.socket.onCameraStatus().subscribe((update) => this.upsertCamera(update)),
@@ -82,6 +96,21 @@ export class MonitoringComponent implements OnInit, OnDestroy {
       },
     });
     input.value = '';
+  }
+
+  connectPhone(camera: Camera): void {
+    this.connectingCameraId = camera.cameraId;
+    this.uploadError = null;
+    this.api.setStreamUrl(camera.cameraId, 'rtsp://localhost:8554/phonecam/live').subscribe({
+      next: (updated) => {
+        this.upsertCamera(updated);
+        this.connectingCameraId = null;
+      },
+      error: (err) => {
+        this.uploadError = `Failed to connect phone feed for ${camera.name}: ${err.error?.detail ?? err.message}`;
+        this.connectingCameraId = null;
+      },
+    });
   }
 
   private upsertCamera(update: Camera): void {

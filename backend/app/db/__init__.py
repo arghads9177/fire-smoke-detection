@@ -17,7 +17,10 @@ def connect() -> AsyncIOMotorDatabase:
     """Create the Motor client from settings and cache the database handle."""
     global _client, _db
     settings = get_settings()
-    _client = AsyncIOMotorClient(settings.mongo_uri)
+    # tz_aware so datetimes read back from MongoDB keep their UTC tzinfo;
+    # otherwise Pydantic serializes them without an offset/Z and clients
+    # (e.g. the dashboard) misread them as local time.
+    _client = AsyncIOMotorClient(settings.mongo_uri, tz_aware=True)
     _db = _client[settings.mongo_db]
     return _db
 

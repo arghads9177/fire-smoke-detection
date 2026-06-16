@@ -19,8 +19,15 @@ rtmp: yes
 rtmpAddress: :1935
 rtmpEncryption: "no"
 
+# HLS output — lets the dashboard embed a live preview of each camera
+# (browsers can't play RTSP directly). Served per-path at :8888/<path>/index.m3u8.
+# "mpegts" variant remuxes without re-encoding, so it works with the
+# simulator's B-frame-encoded test clips (unlike WebRTC, which doesn't).
+hls: yes
+hlsAddress: :8888
+hlsVariant: mpegts
+
 # Disable protocols the MVP doesn't use
-hls: no       # flip to yes for the optional dashboard live-preview stretch goal
 webrtc: no
 srt: no
 moq: no       # default-on in v1.19+, and auto-generates TLS certs in the cwd

@@ -6,11 +6,12 @@ import { ApiService } from '../../core/services/api.service';
 import { SocketService } from '../../core/services/socket.service';
 import { Camera } from '../../core/models';
 import { ConfidenceBarComponent } from '../../shared/components/confidence-bar/confidence-bar.component';
+import { HlsPlayerComponent } from '../../shared/components/hls-player/hls-player.component';
 import { StatusBadgeComponent, StatusBadgeVariant } from '../../shared/components/status-badge/status-badge.component';
 
 @Component({
   selector: 'app-monitoring',
-  imports: [StatusBadgeComponent, ConfidenceBarComponent, DatePipe],
+  imports: [StatusBadgeComponent, ConfidenceBarComponent, HlsPlayerComponent, DatePipe],
   templateUrl: './monitoring.component.html',
 })
 export class MonitoringComponent implements OnInit, OnDestroy {
@@ -63,6 +64,19 @@ export class MonitoringComponent implements OnInit, OnDestroy {
 
   statusVariant(camera: Camera): StatusBadgeVariant {
     return camera.status === 'ONLINE' ? 'online' : 'offline';
+  }
+
+  /** URL of the MediaMTX HLS playlist for a camera's stream.
+   *
+   * The simulator publishes each camera's live feed to MediaMTX under a path
+   * matching its `cameraId` (cam1..cam4), independent of `streamUrl` — which
+   * the AI service may instead point at a locally uploaded test file. Prefer
+   * the path from an `rtsp://` streamUrl when present (e.g. the phone camera's
+   * `phonecam/live`), and fall back to `cameraId` otherwise. */
+  previewUrl(camera: Camera): string {
+    const match = camera.streamUrl.match(/^rtsp:\/\/[^/]+\/(.+)$/);
+    const path = match ? match[1] : camera.cameraId;
+    return `http://${window.location.hostname}:8888/${path}/index.m3u8`;
   }
 
   cardClasses(camera: Camera): string {

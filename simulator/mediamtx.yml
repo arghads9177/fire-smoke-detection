@@ -28,8 +28,13 @@ hlsAddress: :8888
 hlsVariant: mpegts
 hlsSegmentDuration: 500ms
 
+# WebRTC — used by the dashboard for the phone camera (WHEP, sub-second latency).
+# Simulator cams (B-frame H264) still use HLS; phone cam (Baseline H264 from
+# Larix, no B-frames) can use WebRTC without re-encoding.
+webrtc: yes
+webrtcAddress: :8889
+
 # Disable protocols the MVP doesn't use
-webrtc: no
 srt: no
 moq: no       # default-on in v1.19+, and auto-generates TLS certs in the cwd
 

@@ -15,7 +15,7 @@
       <p class="-mt-2 text-xs text-slate-500">{{ camera.location }}</p>
 
       @if (camera.status === 'ONLINE') {
-        <app-hls-player [src]="previewUrl(camera)" />
+        <app-hls-player [src]="hlsUrl(camera)" [whepUrl]="whepUrl(camera)" />
       }
 
       <dl class="flex gap-6">

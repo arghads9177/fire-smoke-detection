@@ -66,14 +66,21 @@ export class MonitoringComponent implements OnInit, OnDestroy {
     return camera.status === 'ONLINE' ? 'online' : 'offline';
   }
 
-  /** URL of the MediaMTX HLS playlist for a camera's stream.
+  /** WHEP (WebRTC) endpoint for a camera, or null if the stream uses HLS.
    *
-   * The simulator publishes each camera's live feed to MediaMTX under a path
-   * matching its `cameraId` (cam1..cam4), independent of `streamUrl` — which
-   * the AI service may instead point at a locally uploaded test file. Prefer
-   * the path from an `rtsp://` streamUrl when present (e.g. the phone camera's
-   * `phonecam/live`), and fall back to `cameraId` otherwise. */
-  previewUrl(camera: Camera): string {
+   * Phone cameras (Larix → RTMP → MediaMTX) encode H.264 Baseline without
+   * B-frames, so WebRTC works and gives sub-100ms latency. Simulator cams use
+   * B-frame H264 which WebRTC rejects, so they fall through to hlsUrl(). */
+  whepUrl(camera: Camera): string | null {
+    const match = camera.streamUrl.match(/^rtsp:\/\/[^/]+\/(.+)$/);
+    if (!match) return null;
+    const path = match[1];
+    // Only use WHEP for streams that come in via RTMP (phone camera paths)
+    return path.includes('phonecam') ? `http://${window.location.hostname}:8889/${path}/whep` : null;
+  }
+
+  /** HLS playlist URL — fallback for cameras whose H264 has B-frames (simulator). */
+  hlsUrl(camera: Camera): string {
     const match = camera.streamUrl.match(/^rtsp:\/\/[^/]+\/(.+)$/);
     const path = match ? match[1] : camera.cameraId;
     return `http://${window.location.hostname}:8888/${path}/index.m3u8`;

@@ -49,6 +49,8 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.teardown();
     if (this.whepUrl) {
       this.attachWhep(this.whepUrl);
+    } else if (this.src.endsWith('.mp4')) {
+      this.attachMp4();
     } else {
       this.attachHls();
     }
@@ -87,6 +89,13 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
   }
 
+  private attachMp4(): void {
+    const video = this.videoRef.nativeElement;
+    video.src = this.src;
+    video.loop = true;
+    video.muted = this.muted;
+  }
+
   private attachHls(): void {
     const video = this.videoRef.nativeElement;
     if (Hls.isSupported()) {
@@ -108,6 +117,8 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
     const video = this.videoRef?.nativeElement;
     if (video) {
       video.srcObject = null;
+      video.src = '';
+      video.loop = false;
     }
   }
 }

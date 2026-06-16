@@ -78,4 +78,8 @@ snapshots_dir = Path(settings.snapshots_dir)
 snapshots_dir.mkdir(parents=True, exist_ok=True)
 fastapi_app.mount("/snapshots", StaticFiles(directory=snapshots_dir), name="snapshots")
 
+uploads_dir = Path(settings.uploads_dir)
+uploads_dir.mkdir(parents=True, exist_ok=True)
+fastapi_app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
+
 app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app, socketio_path="socket.io")

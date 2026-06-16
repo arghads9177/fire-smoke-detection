@@ -79,10 +79,19 @@ export class MonitoringComponent implements OnInit, OnDestroy {
     return path.includes('phonecam') ? `http://${window.location.hostname}:8889/${path}/whep` : null;
   }
 
-  /** HLS playlist URL — fallback for cameras whose H264 has B-frames (simulator). */
+  /** Preview URL for a camera.
+   *
+   * - Uploaded .mp4 (local file path): served directly from the backend's
+   *   /uploads static mount as a native video URL — no MediaMTX needed.
+   * - RTSP stream (simulator cam1–cam4): HLS via MediaMTX :8888.
+   * - Unknown/empty: fall back to the MediaMTX path by cameraId. */
   hlsUrl(camera: Camera): string {
-    const match = camera.streamUrl.match(/^rtsp:\/\/[^/]+\/(.+)$/);
-    const path = match ? match[1] : camera.cameraId;
+    const uploadsMatch = camera.streamUrl.match(/uploads\/(.+\.mp4)$/);
+    if (uploadsMatch) {
+      return `http://${window.location.hostname}:8000/uploads/${uploadsMatch[1]}`;
+    }
+    const rtspMatch = camera.streamUrl.match(/^rtsp:\/\/[^/]+\/(.+)$/);
+    const path = rtspMatch ? rtspMatch[1] : camera.cameraId;
     return `http://${window.location.hostname}:8888/${path}/index.m3u8`;
   }
 

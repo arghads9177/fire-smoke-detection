@@ -1,8 +1,31 @@
 <app-nav />
 
+@if (!audioAlarm.audioEnabled) {
+  <div class="flex items-center justify-between bg-slate-800 px-4 py-2 text-sm text-white shadow-sm">
+    <span>Enable alarm audio to hear fire/smoke alerts</span>
+    <button
+      type="button"
+      (click)="enableAudio()"
+      class="rounded-md bg-white px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm hover:bg-slate-100"
+    >
+      Enable audio
+    </button>
+  </div>
+}
+
+@if (criticalCount > 0) {
+  <a
+    routerLink="/alerts"
+    class="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-red-700"
+  >
+    <span class="animate-pulse">&#9679;</span>
+    {{ criticalCount }} CRITICAL alert{{ criticalCount > 1 ? 's' : '' }} &mdash; click to view
+  </a>
+}
+
 @if (!(connected$ | async)) {
-  <div class="bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
-    Connection lost — retrying… (falling back to polling)
+  <div class="bg-amber-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm">
+    Connection lost &mdash; retrying&hellip; (polling for updates)
   </div>
 }
 
